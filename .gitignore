@@ -1,0 +1,8 @@
+# Build output (compiled classes + copied resources)
+bin/
+
+# Editor — settings.json tracked on purpose: it declares src/main/java +
+# src/main/resources as source paths, needed for the project to run at all
+# (no pom.xml/build.gradle to infer this from otherwise)
+.vscode/*
+!.vscode/settings.json
