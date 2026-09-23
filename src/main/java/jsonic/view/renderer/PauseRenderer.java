@@ -23,8 +23,9 @@ public class PauseRenderer {
     private static final int TITLE_Y_OFFSET = -110; // relative to screen centre
     private static final int FIRST_OPTION_Y_OFFSET = -20; // relative to screen centre
 
-    private static final Color SELECTED_COLOR = new Color(255, 222, 0); // matches HUD warning yellow
+    private static final Color SELECTED_COLOR = new Color(252, 254, 1); // matches HUD warning yellow
     private static final Color UNSELECTED_COLOR = Color.WHITE;
+    private static final Color OVERLAY_COLOR = new Color(0, 0, 0, 140);
 
     private final LevelRenderer levelRenderer;
     private final HUDRenderer hudRenderer;
@@ -39,13 +40,16 @@ public class PauseRenderer {
         levelRenderer.draw(g2, gameSnapshot, false); // frozen: don't let the player's sprite keep animating in place
         hudRenderer.draw(g2, gameSnapshot);
 
+        g2.setColor(OVERLAY_COLOR);
+        g2.fillRect(0, 0, GameConstants.SCREEN_WIDTH, GameConstants.SCREEN_HEIGHT);
+
         int centerX = GameConstants.SCREEN_WIDTH / 2;
         int centerY = GameConstants.SCREEN_HEIGHT / 2;
 
-        g2.setFont(Fonts.sized(56));
-        Fonts.drawOutlinedText(g2, "PAUSA", centerX, centerY + TITLE_Y_OFFSET, SELECTED_COLOR);
+        g2.setFont(Fonts.sized(64));
+        Fonts.drawOutlinedText(g2, "PAUSA", centerX, centerY + TITLE_Y_OFFSET, SELECTED_COLOR, Fonts.Align.CENTER);
 
-        g2.setFont(Fonts.sized(34));
+        g2.setFont(Fonts.sized(48));
         boolean blinkOn = (pauseFrames / BLINK_INTERVAL_FRAMES) % 2 == 0;
         for (int i = 0; i < OPTION_LABELS.length; i++) {
             boolean selected = (i == selectedOption);
