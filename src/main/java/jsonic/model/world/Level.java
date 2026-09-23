@@ -4,7 +4,6 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import jsonic.view.audio.AudioManager;
 import jsonic.utils.GameConstants;
 import jsonic.utils.LevelConfig;
 import jsonic.model.entity.Player;
@@ -12,6 +11,7 @@ import jsonic.model.enemy.BuzzBomber;
 import jsonic.model.enemy.Chopper;
 import jsonic.model.enemy.Enemy;
 import jsonic.model.enemy.Motobug;
+import jsonic.model.audio.IAudioPlayer;
 import jsonic.model.audio.ISoundEmitter;
 import jsonic.model.input.InputSnapshot;
 import jsonic.model.item.BridgeLog;
@@ -43,6 +43,7 @@ public class Level implements IPhysicsWorld, ISoundEmitter {
     private final TileMap tileMap;
     private final Player player;
     private final LevelConfig config; // kept for reset() and background image
+    private final IAudioPlayer audio;
     private final List<Item> items = new ArrayList<>();
     private final List<Enemy> enemies = new ArrayList<>();
 
@@ -124,8 +125,9 @@ public class Level implements IPhysicsWorld, ISoundEmitter {
 
     // constructor
 
-    public Level(LevelConfig config) {
+    public Level(LevelConfig config, IAudioPlayer audio) {
         this.config = config;
+        this.audio = audio;
         this.tileMap = new TileMap(config.mapCsvPath);
         this.player = new Player(this, this, config.startCol, config.startRow);
         loadLevel();
@@ -140,7 +142,7 @@ public class Level implements IPhysicsWorld, ISoundEmitter {
      * including after a Game Over continue.
      */
     private void loadLevel() {
-        AudioManager.playMusic(config.musicPath);
+        audio.playMusic(config.musicPath);
 
         items.clear();
         enemies.clear();
@@ -163,11 +165,11 @@ public class Level implements IPhysicsWorld, ISoundEmitter {
 
                 Item spawnedItem = switch (tileID) {
                     case TileID.RING_SPAWN -> new Ring();
-                    case TileID.GOAL_SPAWN -> new Goal();
+                    case TileID.GOAL_SPAWN -> new Goal(this);
                     case TileID.FLOWER_YELLOW_SPAWN -> new FlowerYellow();
                     case TileID.FLOWER_PURPLE_A_SPAWN -> new FlowerPurple(false);
                     case TileID.FLOWER_PURPLE_B_SPAWN -> new FlowerPurple(true);
-                    case TileID.SPRING_YELLOW_SPAWN -> new Spring();
+                    case TileID.SPRING_YELLOW_SPAWN -> new Spring(this);
                     default -> null;
                 };
                 if (spawnedItem != null) {
@@ -527,7 +529,7 @@ public class Level implements IPhysicsWorld, ISoundEmitter {
                 score += enemyComboPoints();
                 enemyComboCount++;
                 player.bounceOffEnemy();
-                AudioManager.playSfx("enemy_destroy");
+                audio.playSfx("enemy_destroy");
             } else {
                 player.takeDamage(1);
             }
@@ -598,8 +600,8 @@ public class Level implements IPhysicsWorld, ISoundEmitter {
         deathStartY = player.getY();
         player.startDeathPose();
         deathTimer = DEATH_MAX_FRAMES;
-        AudioManager.playSfx("death");
-        if (pendingGameOver) AudioManager.stopMusic(); // no game-over jingle sourced yet; silence beats the level music looping under that screen
+        audio.playSfx("death");
+        if (pendingGameOver) audio.stopMusic(); // no game-over jingle sourced yet; silence beats the level music looping under that screen
     }
 
     // debug
@@ -616,8 +618,6 @@ public class Level implements IPhysicsWorld, ISoundEmitter {
     public int getRingCount() { return ringCount; } // also part of IPhysicsWorld
     @Override
     public int getPlayerX() { return (int) player.getX(); } // part of IPhysicsWorld
-    @Override
-    public int getPlayerY() { return (int) player.getY(); } // part of IPhysicsWorld
     public int getLives() { return lives; }
     public boolean isGameOver() { return gameOver; }
     public boolean isTimeOver() { return timeOver; }
@@ -637,8 +637,6 @@ public class Level implements IPhysicsWorld, ISoundEmitter {
         for (FullLoop fl : fullLoops) all.add(fl.active());
         return all;
     }
-    public java.awt.image.BufferedImage getBackgroundImage() { return config.backgroundImage; }
-
     // iphysicsworld
 
     @Override
@@ -736,14 +734,14 @@ public class Level implements IPhysicsWorld, ISoundEmitter {
     public void addRing() {
         // no direct score here - see the ring-bonus comment near RING_BONUS_PER_RING
         ringCount++;
-        AudioManager.playSfx("ring");
+        audio.playSfx("ring");
     }
 
     @Override
     public void loseRings() {
         scatterRings(ringCount);
         ringCount = 0;
-        AudioManager.playSfx("ring_loss");
+        audio.playSfx("ring_loss");
     }
 
     /**
@@ -792,7 +790,12 @@ public class Level implements IPhysicsWorld, ISoundEmitter {
 
     @Override
     public void playSound(String id) {
-        AudioManager.playSfx(id);
+        audio.playSfx(id);
+    }
+
+    @Override
+    public void playJingle(String name) {
+        audio.playJingle(name);
     }
 
     /** Sonic 1's own time bonus table (TimeBonuses in 0D Signpost.asm): the faster the act, the bigger the bonus. */

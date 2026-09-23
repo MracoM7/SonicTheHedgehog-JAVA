@@ -3,6 +3,7 @@ package jsonic.controller;
 import jsonic.utils.LevelConfig;
 import jsonic.utils.LevelRegistry;
 import jsonic.model.world.Level;
+import jsonic.view.audio.AudioPlayerAdapter;
 
 /**
  * Singleton and sole access point to the Model for the rest of the system: owns the active
@@ -16,11 +17,15 @@ public class ControllerForModel implements IControllerForModel {
     private Level level;
     private LevelConfig selectedLevelConfig = LevelRegistry.LEVEL_01;
 
+    // Level only sees this through IAudioPlayer (model.audio) - injected here, the one place
+    // the Controller is allowed to know about jsonic.view, so the Model itself never imports it.
+    private final AudioPlayerAdapter audio = new AudioPlayerAdapter();
+
     private ControllerForModel() {}
 
     // private methods
     private Level buildLevel() {
-        return new Level(selectedLevelConfig);
+        return new Level(selectedLevelConfig, audio);
     }
 
     // instance methods

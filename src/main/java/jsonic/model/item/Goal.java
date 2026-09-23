@@ -2,7 +2,7 @@ package jsonic.model.item;
 
 import java.awt.Rectangle;
 import jsonic.utils.GameConstants;
-import jsonic.view.audio.AudioManager;
+import jsonic.model.audio.ISoundEmitter;
 import jsonic.model.entity.ICollector;
 
 /**
@@ -30,7 +30,10 @@ public class Goal extends Item {
     public boolean spinning = false;
     public int spinTimer = 0;
 
-    public Goal() {
+    private final ISoundEmitter soundEmitter;
+
+    public Goal(ISoundEmitter soundEmitter) {
+        this.soundEmitter = soundEmitter;
         name = "Goal";
 
         renderHeightTiles = 3; // a single-tile flagpole is easy to miss next to real level geometry
@@ -52,7 +55,7 @@ public class Goal extends Item {
         if (spinTimer >= totalFrames) {
             spinning = false;
             scaleX = 1f;
-            AudioManager.playJingle("level_clear");
+            soundEmitter.playJingle("level_clear");
             return;
         }
 
@@ -84,7 +87,7 @@ public class Goal extends Item {
         isCollected = true;
         spinning = true;
         spinTimer = 0;
-        AudioManager.playSfx("goal_touch");
+        soundEmitter.playSound("goal_touch");
         collector.reachGoal();
     }
 }

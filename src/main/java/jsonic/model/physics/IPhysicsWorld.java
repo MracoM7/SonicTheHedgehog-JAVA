@@ -55,9 +55,8 @@ public interface IPhysicsWorld {
     /** Right edge of the level in world pixels (the level's background image width, scaled). */
     public int getWorldWidth();
 
-    /** Player's current world position — the only way an Enemy is allowed to know where the player is. */
+    /** Player's current world X — the only way an Enemy is allowed to know where the player is. */
     public int getPlayerX();
-    public int getPlayerY();
 
     // player-to-world notifications
     /** Notifies that the player has collected a ring. */

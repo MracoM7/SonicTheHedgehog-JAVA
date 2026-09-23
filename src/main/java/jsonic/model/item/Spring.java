@@ -1,8 +1,8 @@
 package jsonic.model.item;
 
 import java.awt.Rectangle;
-import jsonic.view.audio.AudioManager;
 import jsonic.utils.GameConstants;
+import jsonic.model.audio.ISoundEmitter;
 import jsonic.model.entity.ICollector;
 
 /**
@@ -25,7 +25,10 @@ public class Spring extends Item {
 
     public int extendedTimer = 0;
 
-    public Spring() {
+    private final ISoundEmitter soundEmitter;
+
+    public Spring(ISoundEmitter soundEmitter) {
+        this.soundEmitter = soundEmitter;
         name = "Spring";
 
         renderWidthTiles = 2; // both poses this wide, height follows aspect ratio
@@ -50,6 +53,6 @@ public class Spring extends Item {
 
         collector.launch(LAUNCH_VELOCITY);
         extendedTimer = EXTENDED_FRAMES;
-        AudioManager.playSfx("spring");
+        soundEmitter.playSound("spring");
     }
 }
