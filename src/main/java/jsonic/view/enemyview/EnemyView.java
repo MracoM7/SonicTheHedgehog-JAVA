@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 
 import jsonic.model.enemy.Enemy;
 import jsonic.utils.GameConstants;
+import jsonic.view.DebugDraw;
 
 /**
  * Base class for all per-type enemy views: owns the sprite(s) for one concrete Enemy subclass.
@@ -72,10 +73,11 @@ public abstract class EnemyView {
 
     private void drawDebugHitbox(Graphics2D g2, Enemy enemy, int cameraX, int cameraY) {
         g2.setColor(Color.RED);
-        g2.drawRect(
+        DebugDraw.thickRect(g2,
             enemy.worldX + enemy.solidArea.x - cameraX,
             enemy.worldY + enemy.solidArea.y - cameraY,
             enemy.solidArea.width,
-            enemy.solidArea.height);
+            enemy.solidArea.height,
+            DebugDraw.HITBOX_BORDER_THICKNESS);
     }
 }

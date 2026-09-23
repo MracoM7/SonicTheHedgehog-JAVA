@@ -25,6 +25,10 @@ public final class Fonts {
     private static final String FONT_PATH = "/res/fonts/font.otf";
     private static final Font BASE = load();
 
+    // debug overlay only: font.otf is stylised (thin diagonals, uneven glyph widths) and hard to
+    // read at the small sizes debug text needs - a plain monospaced font reads faster there.
+    private static final Font DEBUG_BASE = new Font(Font.MONOSPACED, Font.BOLD, 1);
+
     private static final Color OUTLINE_COLOR = Color.BLACK;
     private static final int OUTLINE_OFFSET = 1 * GameConstants.SCALE; // outline thickness: 1 native pixel, scaled
 
@@ -47,6 +51,11 @@ public final class Fonts {
 
     public static Font sized(float size) {
         return BASE.deriveFont(size);
+    }
+
+    /** Plain, highly-legible font for the physics debug overlay (hitbox labels, loop angles) - not font.otf. */
+    public static Font debugSized(float size) {
+        return DEBUG_BASE.deriveFont(size);
     }
 
     public enum Align { LEFT, CENTER, RIGHT }

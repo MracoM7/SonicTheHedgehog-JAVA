@@ -14,6 +14,7 @@ import jsonic.model.entity.Player.PlayerState;
 import jsonic.model.item.BridgeLog;
 import jsonic.model.item.Item;
 import jsonic.model.tile.TileID;
+import jsonic.view.DebugDraw;
 import jsonic.view.Fonts;
 import jsonic.view.snapshot.PlayRenderSnapshot;
 
@@ -38,6 +39,12 @@ public class PlayerRenderer {
     private final float Y_EASE_PIXELS_PER_FRAME = 2f * GameConstants.SCALE;
 
     private final int SPRITE_FEET_OFFSET_NATIVE = 20; // hand-tuned, deliberately not Player.BASE_RADIUS_Y (19)
+
+    // debug overlay
+    private static final int SENSOR_LINE_THICKNESS = 5;
+    private static final int SENSOR_MARKER_RADIUS = 5;
+    private static final float DEBUG_TEXT_SIZE = 15f;
+    private static final int DEBUG_TEXT_LINE_HEIGHT = 17;
 
     // assets & internal state
     private BufferedImage idleSprite;
@@ -388,30 +395,28 @@ public class PlayerRenderer {
     private void drawDebugOverlay(Graphics2D g2, PlayRenderSnapshot snap, Player player) {
         int dbgX = (int) player.getX() - player.getCurrentRadiusX() - snap.cameraX;
         int dbgY = (int) player.getY() - player.getCurrentRadiusY() - snap.cameraY;
+        int hitboxW = player.getCurrentRadiusX() * 2;
+        int hitboxH = player.getCurrentRadiusY() * 2;
 
-        // Physical hitbox
+        // Physical hitbox - thick border growing inward, so the outer edge still matches the true hitbox
         g2.setColor(Color.RED);
-        g2.drawRect(dbgX, dbgY,
-            player.getCurrentRadiusX() * 2,
-            player.getCurrentRadiusY() * 2);
+        DebugDraw.thickRect(g2, dbgX, dbgY, hitboxW, hitboxH, DebugDraw.HITBOX_BORDER_THICKNESS);
 
         // Ground sensor line
         g2.setColor(Color.BLUE);
         g2.fillRect(
             dbgX,
-            dbgY + player.getCurrentRadiusY() * 2 - 2,
-            player.getCurrentRadiusX() * 2,
-            2);
+            dbgY + hitboxH - SENSOR_LINE_THICKNESS,
+            hitboxW,
+            SENSOR_LINE_THICKNESS);
 
-        // Text info: angle, ground speed and mode (quadrant) - plain, no outline: at this
-        // small a size the outline swallows the strokes and makes it harder to read, not easier
+        // Text info: angle, ground speed and mode (quadrant), one per line for legibility at this
+        // size - plain, no outline: the outline swallows the strokes and hurts readability, not helps
         g2.setColor(Color.YELLOW);
-        g2.setFont(Fonts.sized(10f));
-        g2.drawString(
-            String.format("%.0f° G:%.1f %s",
-                player.getGroundAngle(), player.getGSpeed(),
-                player.getGravityMode()),
-            dbgX, dbgY - 2);
+        g2.setFont(Fonts.debugSized(DEBUG_TEXT_SIZE));
+        g2.drawString(String.format("%.0f°", player.getGroundAngle()), dbgX, dbgY - 2 - DEBUG_TEXT_LINE_HEIGHT * 2);
+        g2.drawString(String.format("G:%.1f", player.getGSpeed()), dbgX, dbgY - 2 - DEBUG_TEXT_LINE_HEIGHT);
+        g2.drawString(player.getGravityMode().toString(), dbgX, dbgY - 2);
 
         drawVelocityArrow(g2, player, snap.cameraX, snap.cameraY);
         drawDownVector(g2, player, snap.cameraX, snap.cameraY);
@@ -421,14 +426,16 @@ public class PlayerRenderer {
             int leftSensorY  = player.getDebugLeftSensorY();
             int rightSensorY = player.getDebugRightSensorY();
             int leftMarkerX  = dbgX + 4;
-            int rightMarkerX = dbgX + player.getCurrentRadiusX() * 2 - 4;
+            int rightMarkerX = dbgX + hitboxW - 4;
 
             g2.setColor(Color.MAGENTA);
             if (leftSensorY != TileID.NO_SURFACE) {
-                g2.fillOval(leftMarkerX - 3, leftSensorY - snap.cameraY - 2 - 3, 6, 6);
+                g2.fillOval(leftMarkerX - SENSOR_MARKER_RADIUS, leftSensorY - snap.cameraY - 2 - SENSOR_MARKER_RADIUS,
+                    SENSOR_MARKER_RADIUS * 2, SENSOR_MARKER_RADIUS * 2);
             }
             if (rightSensorY != TileID.NO_SURFACE) {
-                g2.fillOval(rightMarkerX - 3, rightSensorY - snap.cameraY - 2 - 3, 6, 6);
+                g2.fillOval(rightMarkerX - SENSOR_MARKER_RADIUS, rightSensorY - snap.cameraY - 2 - SENSOR_MARKER_RADIUS,
+                    SENSOR_MARKER_RADIUS * 2, SENSOR_MARKER_RADIUS * 2);
             }
         }
     }

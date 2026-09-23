@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 
 import jsonic.model.item.Item;
 import jsonic.utils.GameConstants;
+import jsonic.view.DebugDraw;
 
 /**
  * Base class for all per-type item views: owns the sprite(s) for one concrete Item subclass,
@@ -67,10 +68,11 @@ public abstract class ItemView {
 
     private void drawDebugHitbox(Graphics2D g2, Item item, int cameraX, int cameraY) {
         g2.setColor(Color.RED);
-        g2.drawRect(
+        DebugDraw.thickRect(g2,
             item.worldX + item.solidArea.x - cameraX,
             item.worldY + item.solidArea.y - cameraY,
             item.solidArea.width,
-            item.solidArea.height);
+            item.solidArea.height,
+            DebugDraw.HITBOX_BORDER_THICKNESS);
     }
 }

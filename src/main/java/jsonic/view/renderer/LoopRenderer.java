@@ -1,11 +1,10 @@
 package jsonic.view.renderer;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Stroke;
 
 import jsonic.model.physics.LoopRegion;
+import jsonic.view.DebugDraw;
 import jsonic.view.Fonts;
 import jsonic.view.snapshot.PlayRenderSnapshot;
 
@@ -15,11 +14,11 @@ import jsonic.view.snapshot.PlayRenderSnapshot;
  */
 public class LoopRenderer {
 
+    private static final int TICK_MARKER_RADIUS = 4;
+    private static final float DEBUG_TEXT_SIZE = 14f;
+
     public void draw(Graphics2D g2, PlayRenderSnapshot snap) {
         if (!snap.debugMode || snap.loops == null) return;
-
-        Stroke old = g2.getStroke();
-        g2.setStroke(new BasicStroke(2f));
 
         for (LoopRegion loop : snap.loops) {
             int cx = (int) loop.getCenterX() - snap.cameraX;
@@ -28,10 +27,11 @@ public class LoopRenderer {
 
             // Only this arc's own span (Level.getLoops() already picks the currently-solid
             // half); -90° because drawArc starts at 3 o'clock, our convention at 6 o'clock.
+            // Thick border growing inward, so the outer edge still matches the true collision radius.
             g2.setColor(new Color(0x00, 0xE5, 0xFF, 220)); // cyan
             int startJava = Math.round(loop.getArcStart() - 90f);
             int sweepJava = Math.round(((loop.getArcEnd() - loop.getArcStart()) % 360f + 360f) % 360f);
-            g2.drawArc(cx - r, cy - r, r * 2, r * 2, startJava, sweepJava);
+            DebugDraw.thickArc(g2, cx, cy, r, startJava, sweepJava, DebugDraw.HITBOX_BORDER_THICKNESS);
 
             // Centre
             g2.setColor(Color.YELLOW);
@@ -42,7 +42,7 @@ public class LoopRenderer {
             // skipped outside the arc's span so they don't imply collision
             // where there isn't any.
             Color tickColor = new Color(0x00, 0xE5, 0xFF, 140);
-            g2.setFont(Fonts.sized(9f));
+            g2.setFont(Fonts.debugSized(DEBUG_TEXT_SIZE));
             for (int deg = 0; deg < 360; deg += 45) {
                 if (!loop.isInArc(deg)) continue;
                 double a = Math.toRadians(deg);
@@ -50,12 +50,10 @@ public class LoopRenderer {
                 int px = cx + (int) (Math.sin(a) * r);
                 int py = cy + (int) (Math.cos(a) * r);
                 g2.setColor(tickColor);
-                g2.fillOval(px - 2, py - 2, 4, 4);
+                g2.fillOval(px - TICK_MARKER_RADIUS, py - TICK_MARKER_RADIUS, TICK_MARKER_RADIUS * 2, TICK_MARKER_RADIUS * 2);
                 // no outline at this size: it swallows the strokes and hurts readability
-                g2.drawString(deg + "°", px + 3, py);
+                g2.drawString(deg + "°", px + TICK_MARKER_RADIUS + 2, py);
             }
         }
-
-        g2.setStroke(old);
     }
 }
