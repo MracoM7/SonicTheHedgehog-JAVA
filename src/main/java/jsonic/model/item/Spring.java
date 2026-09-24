@@ -15,7 +15,7 @@ import jsonic.utils.GameConstants;
  * bounce also acts as the re-trigger guard.
  *
  * Sprites live in view.itemview.SpringView — extendedTimer > 0 selects the
- * extended pose there, exactly as it did via the image field before.
+ * extended pose there.
  */
 public class Spring extends Item {
 

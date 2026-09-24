@@ -9,9 +9,9 @@ import jsonic.utils.GameConstants;
 /**
  * Simplest Green Hill Zone badnik: walks at constant speed, pausing at a
  * wall or ledge for a beat before turning around, then resumes — matching
- * the original game's behaviour (see src/enemies_guide.png). Snaps to the
- * ground surface every frame rather than simulating gravity — enough for a
- * badnik that never needs to fall.
+ * the original game's behaviour. Snaps to the ground surface every frame
+ * rather than simulating gravity — enough for a badnik that never needs to
+ * fall.
  */
 public class Motobug extends Enemy {
 

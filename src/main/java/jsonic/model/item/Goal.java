@@ -16,8 +16,7 @@ import jsonic.utils.GameConstants;
  * Spin animation: a horizontal squish (the sprite sheet has no true
  * rotation frames, same shortcut as the original), showing Robotnik's
  * side for 8 spins then Sonic's side for 8 more, resting on Sonic.
- * Sprites live in view.itemview.GoalView; isShowingRobotnik() below is
- * the same face-selection rule that used to assign the image field.
+ * Sprites live in view.itemview.GoalView, selected via isShowingRobotnik() below.
  */
 public class Goal extends Item {
 
@@ -41,8 +40,7 @@ public class Goal extends Item {
 
         // matches the sprite's actual drawn footprint: goal.png is a square 48x48 sprite, scaled
         // uniformly by renderHeightTiles to 3x3 tiles, bottom-anchored and centred on the marker
-        // tile (see ItemView.drawStandard()) - the old (0,0,62,48) matched neither the sprite's
-        // native size nor its drawn size, likely stale from an earlier version of the asset
+        // tile (see ItemView.drawStandard())
         int ts = GameConstants.TILE_SIZE;
         solidArea = new Rectangle(-ts, -ts * 2, ts * 3, ts * 3);
     }
@@ -74,7 +72,7 @@ public class Goal extends Item {
         return isCollected && !spinning;
     }
 
-    /** Which sprite face GoalView should show right now — same rule that used to pick the image field directly. */
+    /** Which sprite face GoalView should show right now. */
     public boolean isShowingRobotnik() {
         if (!isCollected) return true;
         if (!spinning) return false;
