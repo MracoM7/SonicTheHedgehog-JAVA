@@ -3,8 +3,8 @@ package jsonic.view.renderer;
 import java.awt.Graphics2D;
 import java.util.List;
 
-import jsonic.utils.GameConstants;
 import jsonic.model.item.Item;
+import jsonic.utils.GameConstants;
 import jsonic.view.itemview.ItemView;
 import jsonic.view.itemview.ItemViewBinder;
 import jsonic.view.snapshot.PlayRenderSnapshot;

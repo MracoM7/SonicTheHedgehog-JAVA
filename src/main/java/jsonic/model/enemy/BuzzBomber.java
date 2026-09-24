@@ -2,9 +2,9 @@ package jsonic.model.enemy;
 
 import java.awt.Rectangle;
 
-import jsonic.utils.GameConstants;
 import jsonic.model.item.BuzzBomberShot;
 import jsonic.model.physics.IPhysicsWorld;
+import jsonic.utils.GameConstants;
 
 /**
  * Flying, shooting badnik: never touches the ground, hovers with a small vertical bob, patrols a

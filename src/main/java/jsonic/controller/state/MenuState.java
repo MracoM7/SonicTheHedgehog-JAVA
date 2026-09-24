@@ -1,11 +1,11 @@
 package jsonic.controller.state;
 
-import jsonic.view.audio.AudioManager;
-import jsonic.utils.LevelRegistry;
 import jsonic.controller.IControllerForModel;
 import jsonic.controller.IControllerForView;
 import jsonic.model.input.InputSnapshot;
+import jsonic.utils.LevelRegistry;
 import jsonic.view.IRenderSnapshot;
+import jsonic.view.audio.AudioManager;
 import jsonic.view.snapshot.MenuRenderSnapshot;
 
 /** Title screen: picks a level with Up/Down (see LevelRegistry.ALL) and starts the stage intro on Enter. */

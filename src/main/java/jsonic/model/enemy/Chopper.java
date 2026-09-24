@@ -1,7 +1,7 @@
 package jsonic.model.enemy;
 
-import jsonic.utils.GameConstants;
 import jsonic.model.physics.IPhysicsWorld;
+import jsonic.utils.GameConstants;
 
 /**
  * Badnik that leaps out of the water near bridges: rests, then jumps straight up and falls back

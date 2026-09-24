@@ -3,10 +3,10 @@ package jsonic.view.renderer;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import jsonic.utils.GameConstants;
 import jsonic.model.tile.TileID;
 import jsonic.model.tile.TileMap;
 import jsonic.model.tile.TileType;
+import jsonic.utils.GameConstants;
 import jsonic.view.snapshot.PlayRenderSnapshot;
 
 /** Draws the level map: visual background, parallax and debug overlay. Reads everything from the snapshot, no persistent Model reference. */

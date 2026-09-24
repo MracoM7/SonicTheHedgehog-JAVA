@@ -1,6 +1,7 @@
 package jsonic.view.renderer;
 
 import java.awt.Graphics2D;
+
 import jsonic.view.snapshot.PlayRenderSnapshot;
 
 /**

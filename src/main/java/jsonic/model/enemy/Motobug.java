@@ -1,10 +1,10 @@
 package jsonic.model.enemy;
 
-import jsonic.utils.GameConstants;
 import jsonic.model.physics.IPhysicsWorld;
 import jsonic.model.physics.IPhysicsWorld.SensorDirection;
 import jsonic.model.physics.IPhysicsWorld.SensorResult;
 import jsonic.model.tile.TileID;
+import jsonic.utils.GameConstants;
 
 /**
  * Simplest Green Hill Zone badnik: walks at constant speed, pausing at a

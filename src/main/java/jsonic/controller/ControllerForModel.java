@@ -1,8 +1,8 @@
 package jsonic.controller;
 
+import jsonic.model.world.Level;
 import jsonic.utils.LevelConfig;
 import jsonic.utils.LevelRegistry;
-import jsonic.model.world.Level;
 import jsonic.view.audio.AudioPlayerAdapter;
 
 /**

@@ -1,8 +1,9 @@
 package jsonic.model.enemy;
 
 import java.awt.Rectangle;
-import jsonic.utils.GameConstants;
+
 import jsonic.model.physics.IPhysicsWorld;
+import jsonic.utils.GameConstants;
 
 /**
  * Base class for all badniks - shares Item's shape (worldX/Y, solidArea) but is its own hierarchy,

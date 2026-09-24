@@ -3,8 +3,9 @@ package jsonic.view.snapshot;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-import jsonic.model.entity.Player;
+
 import jsonic.model.enemy.Enemy;
+import jsonic.model.entity.Player;
 import jsonic.model.item.Item;
 import jsonic.model.physics.LoopRegion;
 import jsonic.model.tile.TileMap;

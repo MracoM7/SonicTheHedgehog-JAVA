@@ -2,8 +2,8 @@ package jsonic.model.item;
 
 import java.awt.Rectangle;
 
-import jsonic.utils.GameConstants;
 import jsonic.model.entity.ICollector;
+import jsonic.utils.GameConstants;
 
 /**
  * BuzzBomber's projectile: flies straight in the direction it was fired,

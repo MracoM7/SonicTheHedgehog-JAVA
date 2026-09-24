@@ -3,8 +3,8 @@ package jsonic.view.renderer;
 import java.awt.Graphics2D;
 import java.util.List;
 
-import jsonic.utils.GameConstants;
 import jsonic.model.enemy.Enemy;
+import jsonic.utils.GameConstants;
 import jsonic.view.enemyview.EnemyView;
 import jsonic.view.enemyview.EnemyViewBinder;
 import jsonic.view.snapshot.PlayRenderSnapshot;

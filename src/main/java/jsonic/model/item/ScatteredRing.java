@@ -1,10 +1,10 @@
 package jsonic.model.item;
 
-import jsonic.utils.GameConstants;
 import jsonic.model.entity.ICollector;
 import jsonic.model.physics.IPhysicsWorld;
 import jsonic.model.physics.IPhysicsWorld.SensorDirection;
 import jsonic.model.physics.IPhysicsWorld.SensorResult;
+import jsonic.utils.GameConstants;
 
 /**
  * A ring knocked loose when the player takes damage with rings > 0 (see

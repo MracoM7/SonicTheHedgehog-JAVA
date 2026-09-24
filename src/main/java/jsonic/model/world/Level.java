@@ -4,15 +4,13 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import jsonic.utils.GameConstants;
-import jsonic.utils.LevelConfig;
-import jsonic.model.entity.Player;
+import jsonic.model.audio.IAudioPlayer;
+import jsonic.model.audio.ISoundEmitter;
 import jsonic.model.enemy.BuzzBomber;
 import jsonic.model.enemy.Chopper;
 import jsonic.model.enemy.Enemy;
 import jsonic.model.enemy.Motobug;
-import jsonic.model.audio.IAudioPlayer;
-import jsonic.model.audio.ISoundEmitter;
+import jsonic.model.entity.Player;
 import jsonic.model.input.InputSnapshot;
 import jsonic.model.item.BridgeLog;
 import jsonic.model.item.BridgePost;
@@ -30,6 +28,8 @@ import jsonic.model.physics.LoopRegion;
 import jsonic.model.tile.TileID;
 import jsonic.model.tile.TileMap;
 import jsonic.model.tile.TileType;
+import jsonic.utils.GameConstants;
+import jsonic.utils.LevelConfig;
 
 /**
  * Complete model of a game level: holds all entities and the logical map,

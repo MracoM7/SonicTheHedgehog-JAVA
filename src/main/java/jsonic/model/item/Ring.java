@@ -1,8 +1,9 @@
 package jsonic.model.item;
 
 import java.awt.Rectangle;
-import jsonic.utils.GameConstants;
+
 import jsonic.model.entity.ICollector;
+import jsonic.utils.GameConstants;
 
 /**
  * Collectible ring.

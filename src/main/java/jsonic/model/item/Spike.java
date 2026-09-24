@@ -1,8 +1,9 @@
 package jsonic.model.item;
 
 import java.awt.Rectangle;
-import jsonic.utils.GameConstants;
+
 import jsonic.model.entity.ICollector;
+import jsonic.utils.GameConstants;
 
 /**
  * Hazard: spikes. Solid like Rock (see Level.spawnSolidObstacle()) but also

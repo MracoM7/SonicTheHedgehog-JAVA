@@ -4,9 +4,9 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import jsonic.utils.GameConstants;
 import jsonic.model.physics.IPhysicsWorld.SensorDirection;
 import jsonic.model.physics.IPhysicsWorld.SensorResult;
+import jsonic.utils.GameConstants;
 
 /** Owns the level's tile grid (loaded from a CSV) and answers every terrain query Player needs: surface/ceiling/wall lookups and sensor casts, via IPhysicsWorld. */
 public class TileMap {

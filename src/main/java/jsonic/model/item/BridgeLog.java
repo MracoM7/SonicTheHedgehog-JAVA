@@ -1,7 +1,7 @@
 package jsonic.model.item;
 
-import jsonic.utils.GameConstants;
 import jsonic.model.entity.ICameraTarget;
+import jsonic.utils.GameConstants;
 
 /**
  * One log of a Bridge (see TileID.BRIDGE_LEFT_POST/BRIDGE_RIGHT_POST).

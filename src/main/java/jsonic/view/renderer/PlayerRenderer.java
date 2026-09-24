@@ -4,16 +4,15 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.List;
 import javax.imageio.ImageIO;
 
-import java.util.List;
-
-import jsonic.utils.GameConstants;
 import jsonic.model.entity.Player;
 import jsonic.model.entity.Player.PlayerState;
 import jsonic.model.item.BridgeLog;
 import jsonic.model.item.Item;
 import jsonic.model.tile.TileID;
+import jsonic.utils.GameConstants;
 import jsonic.view.DebugDraw;
 import jsonic.view.Fonts;
 import jsonic.view.snapshot.PlayRenderSnapshot;

@@ -1,12 +1,12 @@
 package jsonic.model.entity;
 
-import jsonic.utils.GameConstants;
-import jsonic.model.input.InputSnapshot;
 import jsonic.model.audio.ISoundEmitter;
+import jsonic.model.input.InputSnapshot;
 import jsonic.model.physics.IPhysicsWorld;
 import jsonic.model.physics.IPhysicsWorld.SensorDirection;
 import jsonic.model.physics.IPhysicsWorld.SensorResult;
 import jsonic.model.tile.TileID;
+import jsonic.utils.GameConstants;
 
 /**
  * Player physics: quadrant-based ground/air movement per the Sonic Physics Guide.

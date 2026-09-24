@@ -1,10 +1,10 @@
 package jsonic.controller;
 
+import jsonic.controller.state.StateManager;
+import jsonic.model.input.InputSnapshot;
+import jsonic.model.world.Level;
 import jsonic.utils.GameConstants;
 import jsonic.utils.LevelConfig;
-import jsonic.model.input.InputSnapshot;
-import jsonic.controller.state.StateManager;
-import jsonic.model.world.Level;
 import jsonic.view.IRenderSnapshot;
 import jsonic.view.IView;
 
