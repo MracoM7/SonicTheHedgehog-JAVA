@@ -1,11 +1,10 @@
 package jsonic.view.itemview;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 import jsonic.model.item.Item;
 import jsonic.model.item.Spring;
+import jsonic.view.SpriteLoader;
 
 public class SpringView extends ItemView {
 
@@ -13,15 +12,8 @@ public class SpringView extends ItemView {
     private BufferedImage compressedSprite;
 
     public SpringView() {
-        try {
-            extendedSprite = ImageIO.read(getClass().getResourceAsStream(
-                "/res/sprites/items/spring_yellow_extended.png"));
-            compressedSprite = ImageIO.read(getClass().getResourceAsStream(
-                "/res/sprites/items/spring_yellow_compressed.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("SpringView: failed to load sprites");
-        }
+        extendedSprite = SpriteLoader.load(getClass(), "/res/sprites/items/spring_yellow_extended.png");
+        compressedSprite = SpriteLoader.load(getClass(), "/res/sprites/items/spring_yellow_compressed.png");
     }
 
     @Override

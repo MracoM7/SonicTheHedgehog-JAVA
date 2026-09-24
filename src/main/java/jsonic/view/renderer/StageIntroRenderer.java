@@ -3,10 +3,9 @@ package jsonic.view.renderer;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 import jsonic.utils.GameConstants;
+import jsonic.view.SpriteLoader;
 import jsonic.view.snapshot.StageIntroRenderSnapshot;
 
 /**
@@ -33,15 +32,7 @@ public class StageIntroRenderer {
         if (java.util.Objects.equals(splashCardPath, loadedPath)) return;
         loadedPath = splashCardPath;
 
-        splash = null;
-        if (splashCardPath == null) return;
-
-        try {
-            splash = ImageIO.read(getClass().getResourceAsStream(splashCardPath));
-        } catch (IOException | IllegalArgumentException e) {
-            e.printStackTrace();
-            System.err.println("StageIntroRenderer: failed to load " + splashCardPath);
-        }
+        splash = splashCardPath == null ? null : SpriteLoader.load(getClass(), splashCardPath);
     }
 
     public void draw(Graphics2D g2, StageIntroRenderSnapshot snap) {

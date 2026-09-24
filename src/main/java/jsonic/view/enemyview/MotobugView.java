@@ -1,11 +1,10 @@
 package jsonic.view.enemyview;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 import jsonic.model.enemy.Enemy;
 import jsonic.model.enemy.Motobug;
+import jsonic.view.SpriteLoader;
 
 public class MotobugView extends EnemyView {
 
@@ -23,27 +22,20 @@ public class MotobugView extends EnemyView {
     private BufferedImage[] smokeFrames;
 
     public MotobugView() {
-        try {
-            BufferedImage sheet = ImageIO.read(
-                getClass().getResourceAsStream("/res/sprites/enemies/motobug.png")); // faces right by default
+        BufferedImage sheet = SpriteLoader.load(getClass(), "/res/sprites/enemies/motobug.png"); // faces right by default
+        if (sheet != null) {
             frames = new BufferedImage[FRAME_COUNT];
             for (int i = 0; i < FRAME_COUNT; i++) {
                 frames[i] = sheet.getSubimage(i * FRAME_SIZE, 0, FRAME_SIZE, sheet.getHeight());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("MotobugView: failed to load sprite from /res/sprites/enemies/motobug.png");
         }
-        try {
-            BufferedImage smokeSheet = ImageIO.read(
-                getClass().getResourceAsStream("/res/sprites/enemies/motobug_smoke.png"));
+
+        BufferedImage smokeSheet = SpriteLoader.load(getClass(), "/res/sprites/enemies/motobug_smoke.png");
+        if (smokeSheet != null) {
             smokeFrames = new BufferedImage[SMOKE_FRAME_COUNT];
             for (int i = 0; i < SMOKE_FRAME_COUNT; i++) {
                 smokeFrames[i] = smokeSheet.getSubimage(i * SMOKE_FRAME_SIZE, 0, SMOKE_FRAME_SIZE, smokeSheet.getHeight());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("MotobugView: failed to load sprite from /res/sprites/enemies/motobug_smoke.png");
         }
     }
 

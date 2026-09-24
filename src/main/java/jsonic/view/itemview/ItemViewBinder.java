@@ -17,11 +17,7 @@ import jsonic.model.item.ScatteredRing;
 import jsonic.model.item.Spike;
 import jsonic.model.item.Spring;
 
-/**
- * Maps each concrete Item subclass to the single ItemView instance that owns its sprite(s) -
- * mirrors JRoyale's EntityViewBinder (one View per type, looked up by the renderer instead of
- * held by the Model instance itself).
- */
+/** Maps each concrete Item subclass to the single ItemView instance that owns its sprite(s), looked up by the renderer instead of held by the Model instance itself. */
 public class ItemViewBinder {
 
     private static ItemViewBinder instance = null;

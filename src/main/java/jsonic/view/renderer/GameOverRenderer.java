@@ -2,10 +2,9 @@ package jsonic.view.renderer;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 import jsonic.utils.GameConstants;
+import jsonic.view.SpriteLoader;
 import jsonic.view.snapshot.PlayRenderSnapshot;
 
 /**
@@ -24,13 +23,8 @@ public class GameOverRenderer {
     public GameOverRenderer(LevelRenderer levelRenderer, HUDRenderer hudRenderer) {
         this.levelRenderer = levelRenderer;
         this.hudRenderer = hudRenderer;
-        try {
-            gameOverText = ImageIO.read(getClass().getResourceAsStream("/res/sprites/screens/game_over.png"));
-            timeOverText = ImageIO.read(getClass().getResourceAsStream("/res/sprites/screens/time_over.png"));
-        } catch (IOException | IllegalArgumentException e) {
-            e.printStackTrace();
-            System.err.println("GameOverRenderer: failed to load game_over.png/time_over.png");
-        }
+        gameOverText = SpriteLoader.load(getClass(), "/res/sprites/screens/game_over.png");
+        timeOverText = SpriteLoader.load(getClass(), "/res/sprites/screens/time_over.png");
     }
 
     public void draw(Graphics2D g2, PlayRenderSnapshot gameSnapshot) {

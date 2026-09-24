@@ -3,12 +3,11 @@ package jsonic.view.renderer;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.Objects;
-import javax.imageio.ImageIO;
 
 import jsonic.utils.GameConstants;
 import jsonic.view.Fonts;
+import jsonic.view.SpriteLoader;
 import jsonic.view.snapshot.LevelCompleteRenderSnapshot;
 
 /**
@@ -48,19 +47,16 @@ public class LevelCompleteRenderer {
     public LevelCompleteRenderer(LevelRenderer levelRenderer, HUDRenderer hudRenderer) {
         this.levelRenderer = levelRenderer;
         this.hudRenderer = hudRenderer;
-        try {
-            BufferedImage sheet = ImageIO.read(getClass().getResourceAsStream("/res/sprites/hud/hud_digits.png"));
+        BufferedImage sheet = SpriteLoader.load(getClass(), "/res/sprites/hud/hud_digits.png");
+        if (sheet != null) {
             for (int i = 0; i < digitGlyphs.length; i++) {
                 digitGlyphs[i] = sheet.getSubimage(i * GLYPH_WIDTH, 0, GLYPH_WIDTH, GLYPH_HEIGHT);
             }
-            scoreLabel = ImageIO.read(getClass().getResourceAsStream("/res/sprites/screens/results_score.png"));
-            timeLabel = ImageIO.read(getClass().getResourceAsStream("/res/sprites/screens/results_time.png"));
-            bonusLabel = ImageIO.read(getClass().getResourceAsStream("/res/sprites/screens/results_bonus.png"));
-            ringLabel = ImageIO.read(getClass().getResourceAsStream("/res/sprites/screens/results_ring.png"));
-        } catch (IOException | IllegalArgumentException e) {
-            e.printStackTrace();
-            System.err.println("LevelCompleteRenderer: failed to load results screen sprites");
         }
+        scoreLabel = SpriteLoader.load(getClass(), "/res/sprites/screens/results_score.png");
+        timeLabel = SpriteLoader.load(getClass(), "/res/sprites/screens/results_time.png");
+        bonusLabel = SpriteLoader.load(getClass(), "/res/sprites/screens/results_bonus.png");
+        ringLabel = SpriteLoader.load(getClass(), "/res/sprites/screens/results_ring.png");
     }
 
     // (Re)loads the passed card for a level, falling back to the generic one - a no-op if already loaded.
@@ -68,17 +64,8 @@ public class LevelCompleteRenderer {
         if (Objects.equals(passedCardPath, loadedPath)) return;
         loadedPath = passedCardPath;
 
-        passedCard = passedCardPath == null ? null : loadSprite(passedCardPath);
-        if (passedCard == null) passedCard = loadSprite(GENERIC_PASSED_PATH);
-    }
-
-    private BufferedImage loadSprite(String path) {
-        try {
-            return ImageIO.read(getClass().getResourceAsStream(path));
-        } catch (IOException | IllegalArgumentException e) {
-            System.err.println("LevelCompleteRenderer: failed to load " + path);
-            return null;
-        }
+        passedCard = passedCardPath == null ? null : SpriteLoader.load(getClass(), passedCardPath);
+        if (passedCard == null) passedCard = SpriteLoader.load(getClass(), GENERIC_PASSED_PATH);
     }
 
     public void draw(Graphics2D g2, LevelCompleteRenderSnapshot snap) {

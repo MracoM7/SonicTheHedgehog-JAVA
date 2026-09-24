@@ -9,7 +9,7 @@ import jsonic.model.enemy.Chopper;
 import jsonic.model.enemy.Enemy;
 import jsonic.model.enemy.Motobug;
 
-/** Maps each concrete Enemy subclass to the single EnemyView instance that owns its sprite(s) - mirrors JRoyale's EntityViewBinder. */
+/** Maps each concrete Enemy subclass to the single EnemyView instance that owns its sprite(s), looked up by the renderer instead of held by the Model instance itself. */
 public class EnemyViewBinder {
 
     private static EnemyViewBinder instance = null;

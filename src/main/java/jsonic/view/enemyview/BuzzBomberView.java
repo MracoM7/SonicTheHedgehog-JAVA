@@ -1,11 +1,10 @@
 package jsonic.view.enemyview;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 import jsonic.model.enemy.BuzzBomber;
 import jsonic.model.enemy.Enemy;
+import jsonic.view.SpriteLoader;
 
 public class BuzzBomberView extends EnemyView {
 
@@ -21,26 +20,16 @@ public class BuzzBomberView extends EnemyView {
     private BufferedImage[] exhaustFrames;
 
     public BuzzBomberView() {
-        idleImage = loadSprite("/res/sprites/enemies/buzzbomber_idle.png");
-        fireImage = loadSprite("/res/sprites/enemies/buzzbomber_fire.png");
+        idleImage = SpriteLoader.load(getClass(), "/res/sprites/enemies/buzzbomber_idle.png");
+        fireImage = SpriteLoader.load(getClass(), "/res/sprites/enemies/buzzbomber_fire.png");
         wingFrames = new BufferedImage[] {
-            loadSprite("/res/sprites/enemies/buzzbomber_wing1.png"),
-            loadSprite("/res/sprites/enemies/buzzbomber_wing2.png")
+            SpriteLoader.load(getClass(), "/res/sprites/enemies/buzzbomber_wing1.png"),
+            SpriteLoader.load(getClass(), "/res/sprites/enemies/buzzbomber_wing2.png")
         };
         exhaustFrames = new BufferedImage[] {
-            loadSprite("/res/sprites/enemies/buzzbomber_fire1.png"),
-            loadSprite("/res/sprites/enemies/buzzbomber_fire2.png")
+            SpriteLoader.load(getClass(), "/res/sprites/enemies/buzzbomber_fire1.png"),
+            SpriteLoader.load(getClass(), "/res/sprites/enemies/buzzbomber_fire2.png")
         };
-    }
-
-    private BufferedImage loadSprite(String path) {
-        try {
-            return ImageIO.read(getClass().getResourceAsStream(path));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("BuzzBomberView: failed to load sprite from " + path);
-            return null;
-        }
     }
 
     @Override

@@ -3,11 +3,10 @@ package jsonic.view.renderer;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 import jsonic.utils.GameConstants;
 import jsonic.view.Fonts;
+import jsonic.view.SpriteLoader;
 import jsonic.view.snapshot.PlayRenderSnapshot;
 
 /**
@@ -56,24 +55,20 @@ public class HUDRenderer {
     }
 
     private void loadFont() {
-        try {
-            BufferedImage sheet = ImageIO.read(
-                getClass().getResourceAsStream("/res/sprites/hud/hud_digits.png"));
+        BufferedImage sheet = SpriteLoader.load(getClass(), "/res/sprites/hud/hud_digits.png");
+        if (sheet != null) {
             for (int i = 0; i < digitGlyphs.length; i++) {
                 digitGlyphs[i] = sheet.getSubimage(i * GLYPH_WIDTH, 0, GLYPH_WIDTH, GLYPH_HEIGHT);
             }
-            labelScore = ImageIO.read(getClass().getResourceAsStream("/res/sprites/hud/hud_label_score.png"));
-            labelTime = ImageIO.read(getClass().getResourceAsStream("/res/sprites/hud/hud_label_time.png"));
-            labelTimeRed = ImageIO.read(getClass().getResourceAsStream("/res/sprites/hud/hud_label_time_red.png"));
-            labelRings = ImageIO.read(getClass().getResourceAsStream("/res/sprites/hud/hud_label_rings.png"));
-            labelRingsRed = ImageIO.read(getClass().getResourceAsStream("/res/sprites/hud/hud_label_rings_red.png"));
-            lifeIcon = ImageIO.read(getClass().getResourceAsStream("/res/sprites/hud/hud_life_icon.png"));
-            labelSonic = ImageIO.read(getClass().getResourceAsStream("/res/sprites/hud/hud_label_sonic.png"));
-            xChar = ImageIO.read(getClass().getResourceAsStream("/res/sprites/hud/hud_x_char.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("HUDRenderer: failed to load HUD assets");
         }
+        labelScore = SpriteLoader.load(getClass(), "/res/sprites/hud/hud_label_score.png");
+        labelTime = SpriteLoader.load(getClass(), "/res/sprites/hud/hud_label_time.png");
+        labelTimeRed = SpriteLoader.load(getClass(), "/res/sprites/hud/hud_label_time_red.png");
+        labelRings = SpriteLoader.load(getClass(), "/res/sprites/hud/hud_label_rings.png");
+        labelRingsRed = SpriteLoader.load(getClass(), "/res/sprites/hud/hud_label_rings_red.png");
+        lifeIcon = SpriteLoader.load(getClass(), "/res/sprites/hud/hud_life_icon.png");
+        labelSonic = SpriteLoader.load(getClass(), "/res/sprites/hud/hud_label_sonic.png");
+        xChar = SpriteLoader.load(getClass(), "/res/sprites/hud/hud_x_char.png");
     }
 
     public void draw(Graphics2D g2, PlayRenderSnapshot snap) {

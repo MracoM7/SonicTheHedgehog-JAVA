@@ -3,12 +3,11 @@ package jsonic.view.renderer;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 import jsonic.utils.GameConstants;
 import jsonic.utils.LevelRegistry;
 import jsonic.view.Fonts;
+import jsonic.view.SpriteLoader;
 import jsonic.view.audio.AudioManager;
 import jsonic.view.snapshot.MenuRenderSnapshot;
 
@@ -37,23 +36,13 @@ public class TitleRenderer {
     private BufferedImage pressStart;
 
     public TitleRenderer() {
-        background = loadSprite("/res/sprites/menu/title_background.png");
+        background = SpriteLoader.load(getClass(), "/res/sprites/menu/title_background.png");
         loadLogoFrames();
-        pressStart = loadSprite("/res/sprites/menu/press_start.png");
-    }
-
-    private BufferedImage loadSprite(String path) {
-        try {
-            return ImageIO.read(getClass().getResourceAsStream(path));
-        } catch (IOException | IllegalArgumentException e) {
-            e.printStackTrace();
-            System.err.println("TitleRenderer: failed to load sprite from " + path);
-            return null;
-        }
+        pressStart = SpriteLoader.load(getClass(), "/res/sprites/menu/press_start.png");
     }
 
     private void loadLogoFrames() {
-        BufferedImage sheet = loadSprite("/res/sprites/menu/title_logo.png");
+        BufferedImage sheet = SpriteLoader.load(getClass(), "/res/sprites/menu/title_logo.png");
         if (sheet == null) return;
         logoFrames = new BufferedImage[LOGO_FRAME_COUNT];
         for (int i = 0; i < LOGO_FRAME_COUNT; i++) {

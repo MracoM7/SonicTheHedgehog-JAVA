@@ -2,10 +2,9 @@ package jsonic.view.renderer;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 import jsonic.utils.GameConstants;
+import jsonic.view.SpriteLoader;
 
 /**
  * Draws a level's parallax backdrop: 4 horizontal bands (sky, mountains, hills, water) from
@@ -69,13 +68,7 @@ public class ParallaxRenderer {
     }
 
     private BufferedImage load(String folder, String fileName) {
-        try {
-            return ImageIO.read(getClass().getResourceAsStream(folder + fileName));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("ParallaxRenderer: failed to load " + folder + fileName);
-            return null;
-        }
+        return SpriteLoader.load(getClass(), folder + fileName);
     }
 
     // A few extra pixels of height closes the pixel-wide seam fullscreen's letterbox scaling can round into.

@@ -3,9 +3,7 @@ package jsonic.view.renderer;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.List;
-import javax.imageio.ImageIO;
 
 import jsonic.model.entity.Player;
 import jsonic.model.entity.Player.PlayerState;
@@ -15,6 +13,7 @@ import jsonic.model.tile.TileID;
 import jsonic.utils.GameConstants;
 import jsonic.view.DebugDraw;
 import jsonic.view.Fonts;
+import jsonic.view.SpriteLoader;
 import jsonic.view.snapshot.PlayRenderSnapshot;
 
 /**
@@ -85,10 +84,8 @@ public class PlayerRenderer {
 
     /** Loads the sprite sheet crops; coordinates are hardcoded since the sheet layout never changes. */
     private void loadSprites() {
-        try {
-            BufferedImage sheet = ImageIO.read(
-                getClass().getResourceAsStream("/res/sprites/player/sonic.png"));
-
+        BufferedImage sheet = SpriteLoader.load(getClass(), "/res/sprites/player/sonic.png");
+        if (sheet != null) {
             idleSprite = sheet.getSubimage(43, 257, 32, 40);
             lookingUpSprite = sheet.getSubimage(425, 257, 32, 40);
             curlingUpSprite = sheet.getSubimage(507, 265, 40, 32);
@@ -139,10 +136,6 @@ public class PlayerRenderer {
             boredSprites[1] = sheet.getSubimage(199, 257, 32, 40);
             boredSprites[2] = sheet.getSubimage(269, 257, 32, 40);
             boredSprites[3] = sheet.getSubimage(339, 257, 32, 40);
-
-        } catch (IOException | NullPointerException e) {
-            e.printStackTrace();
-            System.err.println("PlayerRenderer: failed to load sprite from /res/sprites/player/sonic.png");
         }
     }
 
