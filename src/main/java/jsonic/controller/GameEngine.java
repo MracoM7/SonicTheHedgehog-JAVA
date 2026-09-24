@@ -33,9 +33,7 @@ public class GameEngine implements IGameEngine, GameLoop.TickListener {
 
         gameView.addKeyListener(inputHandler);
 
-        // F11 fullscreen toggle: a window-management concern, not gameplay
-        // input, so it's wired straight to GameWindow here rather than
-        // going through InputHandler/InputSnapshot like movement/menu keys.
+        // F11 fullscreen toggle: a window-management concern, not gameplay input
         gameView.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {

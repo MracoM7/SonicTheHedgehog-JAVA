@@ -137,13 +137,11 @@ public class Camera {
     }
 
     // utility
-
     private float clamp(float val, float min, float max) {
         return Math.max(min, Math.min(max, val));
     }
 
     // getters
-
     public float getX() { return x; }
     public float getY() { return y; }
 }
