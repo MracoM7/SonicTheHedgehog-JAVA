@@ -753,7 +753,7 @@ public class Level implements IPhysicsWorld, ISoundEmitter {
      * ring-loss scatter. Capped rather than spawning exactly `count` so a
      * player carrying, say, 40 rings doesn't launch 40 objects at once.
      */
-    private static final int SCATTER_MAX_RINGS = 8;
+    private static final int SCATTER_MAX_RINGS = 32; // Sonic_LoseRings' own cap (s1disasm)
     private static final float SCATTER_SPEED = 5f * GameConstants.SCALE;
 
     private void scatterRings(int count) {
