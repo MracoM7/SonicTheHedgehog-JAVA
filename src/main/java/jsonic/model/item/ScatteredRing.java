@@ -24,6 +24,7 @@ public class ScatteredRing extends Ring {
     private static final int LIFESPAN_FRAMES = 180; // 3s @ 60fps, then it vanishes unclaimed
     private static final int GROUND_LOOK_UP = GameConstants.TILE_SIZE;
     private static final int GROUND_LOOK_DOWN = GameConstants.TILE_SIZE / 4; // short: a ring falls slowly, doesn't need a full-tile lookahead
+    private static final int SIDE_LOOK_FWD = GameConstants.TILE_SIZE / 4;
     // rings spawn overlapping the player's own hitbox, so without this delay they'd be instantly re-collected
     private static final int PICKUP_DELAY_FRAMES = 15;
 
@@ -59,6 +60,7 @@ public class ScatteredRing extends Ring {
             vy += GRAVITY;
             worldX += Math.round(vx);
             worldY += Math.round(vy);
+            bounceOffWallIfNeeded();
             bounceOffGroundIfNeeded();
         }
 
@@ -75,7 +77,7 @@ public class ScatteredRing extends Ring {
 
         worldY -= bottomY - ground.surface; // snap back onto the surface
 
-        if (Math.abs(vy) < SETTLE_VELOCITY) {
+        if (Math.abs(vy) < SETTLE_VELOCITY && Math.abs(vx) < SETTLE_VELOCITY) {
             settled = true;
             vx = 0;
             vy = 0;
@@ -83,6 +85,24 @@ public class ScatteredRing extends Ring {
             vy = -vy * BOUNCE_DAMPING;
             vx *= HORIZONTAL_DRAG;
         }
+    }
+
+    private void bounceOffWallIfNeeded() {
+        if (vx == 0f) return;
+
+        boolean movingRight = vx > 0;
+        int centerY = worldY + solidArea.y + solidArea.height / 2;
+        int edgeX = movingRight ? worldX + solidArea.x + solidArea.width : worldX + solidArea.x;
+        SensorDirection dir = movingRight ? SensorDirection.RIGHT : SensorDirection.LEFT;
+
+        SensorResult wall = world.castSensor(
+            edgeX, centerY, dir, Math.round(Math.abs(vx)), SIDE_LOOK_FWD);
+        if (!wall.found) return;
+        boolean tunneled = movingRight ? edgeX > wall.surface : edgeX < wall.surface;
+        if (!tunneled) return;
+
+        worldX += wall.surface - edgeX; // snap back onto the surface
+        vx = -vx * BOUNCE_DAMPING;
     }
 
     @Override

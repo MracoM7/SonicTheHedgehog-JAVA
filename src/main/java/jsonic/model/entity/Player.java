@@ -47,7 +47,7 @@ public class Player extends Entity implements ICameraTarget, ICollector {
 
     // ground sensor extension (uphill/downhill reach)
     private final int SENSOR_LOOK_UP = 8 * (int) SCALE_FACTOR;
-    private final int SENSOR_LOOK_DOWN = 14 * (int) SCALE_FACTOR;
+    private final int SENSOR_LOOK_DOWN = GameConstants.TILE_SIZE; // a 22.5° slope's surface can vary across nearly a full tile within one column pair
 
     // fixed-point (value/256) constants, from SPG:Forces
     private final float GRAVITY = (56f / 256f) * SCALE_FACTOR;
@@ -715,10 +715,17 @@ public class Player extends Entity implements ICameraTarget, ICollector {
             invulnerableTimer = INVULNERABILITY_FRAMES;
             hitStun = true;
 
+            float knockTangent = facingRight ? -HURT_KNOCKBACK_X : HURT_KNOCKBACK_X;
+            if (onGround) {
+                float rad = (float) Math.toRadians(groundAngle);
+                velX = knockTangent * (float) Math.cos(rad) + HURT_KNOCKBACK_Y * (float) Math.sin(rad);
+                velY = -knockTangent * (float) Math.sin(rad) + HURT_KNOCKBACK_Y * (float) Math.cos(rad);
+            } else {
+                velX = knockTangent;
+                velY = HURT_KNOCKBACK_Y;
+            }
             onGround = false;
             currentState = PlayerState.JUMPING;
-            velY = HURT_KNOCKBACK_Y;
-            velX = facingRight ? -HURT_KNOCKBACK_X : HURT_KNOCKBACK_X;
         } else {
             world.killPlayer();
         }
@@ -747,9 +754,16 @@ public class Player extends Entity implements ICameraTarget, ICollector {
 
     public float getVelocityY() { return velY; }
 
-    /** Reaction to stomping an enemy from above: a smaller involuntary jump than the real jump impulse. */
+    /** Smaller involuntary jump than a real one, launched along the surface normal when grounded (not screen-up, or it could push into a wall/ceiling inside a loop). */
     public void bounceOffEnemy() {
-        velY = JUMP_STRENGTH * ENEMY_BOUNCE_FACTOR;
+        float bounceStrength = JUMP_STRENGTH * ENEMY_BOUNCE_FACTOR;
+        if (onGround) {
+            float rad = (float) Math.toRadians(groundAngle);
+            velX = gSpeed * (float) Math.cos(rad) + bounceStrength * (float) Math.sin(rad);
+            velY = -gSpeed * (float) Math.sin(rad) + bounceStrength * (float) Math.cos(rad);
+        } else {
+            velY = bounceStrength;
+        }
         onGround = false;
         currentState = PlayerState.JUMPING;
     }
