@@ -70,7 +70,7 @@ public class ScatteredRing extends Ring {
         int bottomY = worldY + solidArea.y + solidArea.height;
 
         SensorResult ground = world.castSensor(
-            centerX, bottomY, SensorDirection.DOWN, GROUND_LOOK_UP, GROUND_LOOK_DOWN);
+            centerX, bottomY, SensorDirection.DOWN, GROUND_LOOK_UP + Math.round(Math.abs(vy)), GROUND_LOOK_DOWN);
         if (!ground.found || bottomY < ground.surface) return;
 
         worldY -= bottomY - ground.surface; // snap back onto the surface

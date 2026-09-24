@@ -498,6 +498,9 @@ public class Level implements IPhysicsWorld, ISoundEmitter {
      * Stomp from above defeats the enemy and bounces the player; any other contact hurts the
      * player. While ROLLING or JUMPING, Sonic is curled and defeats an enemy from any side -
      * JUMPING needs this too, since velocityY is still negative jumping up into a hovering enemy.
+     * Never defeats while in hit-stun, though: takeDamage() also sets JUMPING for its knockback
+     * arc, but that's an involuntary bounce, not an attack, so it must not chain into a second
+     * enemy touched mid-flight.
      */
     private void checkEnemyCollisions() {
         int hitX = (int) player.getX() - player.getHitboxRadiusX();
@@ -522,7 +525,7 @@ public class Level implements IPhysicsWorld, ISoundEmitter {
             boolean fromAbove = player.getVelocityY() > 0 && player.getY() < enemyCenterY;
             Player.PlayerState state = player.getCurrentState();
             boolean curled = state == Player.PlayerState.ROLLING || state == Player.PlayerState.JUMPING;
-            boolean defeats = fromAbove || curled;
+            boolean defeats = !player.isHitStun() && (fromAbove || curled);
 
             if (defeats) {
                 enemy.defeated = true;
