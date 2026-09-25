@@ -6,3 +6,5 @@ bin/
 # (no pom.xml/build.gradle to infer this from otherwise)
 .vscode/*
 !.vscode/settings.json
+
+build-jar.sh
