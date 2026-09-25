@@ -18,11 +18,10 @@ public class BuzzBomber extends Enemy {
     private static final int FLIGHT_FRAMES = 128; // guide value: flight time per leg before turning around
     private static final int TURN_WAIT_FRAMES = 60; // guide value: pause before resuming flight
 
-    // firing sequence: waits, shoots (gun-out pose), spawns the shot, waits before resuming flight
+    // firing sequence: waits (gun-out pose), fires, holds the pose while the shot travels
     private static final int FIRE_TRIGGER_RADIUS = GameConstants.TILE_SIZE * 6; // player X within this range
-    private static final int PRE_FIRE_FRAMES = 29;
-    private static final int FIRE_ANIM_FRAMES = 14 + 8 + 9; // guide's 3-sprite shot animation length
-    private static final int POST_FIRE_FRAMES = 29;
+    private static final int PRE_FIRE_FRAMES = 30; // guide value, used as-is
+    private static final int FIRE_HOLD_FRAMES = 60; // guide value, used as-is
 
     private static final int WING_ANIM_SPEED = 2; // guide: wings animate every 2 frames
     private static final int WING_FRAME_COUNT = 2;
@@ -44,7 +43,7 @@ public class BuzzBomber extends Enemy {
 
     private boolean firedThisLeg = false; // at most one shot per patrol leg, reset on turnaround
     public boolean firing = false; // read by BuzzBomberView to pick idle vs fire pose
-    private int firePhase = 0; // 0 = waiting to shoot, 1 = shot animation, 2 = cooldown
+    private boolean shotFired = false; // false = still in the pre-fire wait, true = holding the pose after
     private int firePhaseTimer = 0;
 
     private int wingTimer = 0;
@@ -80,7 +79,7 @@ public class BuzzBomber extends Enemy {
                 int centerX = worldX + solidArea.x + solidArea.width / 2;
                 if (!firedThisLeg && Math.abs(world.getPlayerX() - centerX) < FIRE_TRIGGER_RADIUS) {
                     firing = true;
-                    firePhase = 0;
+                    shotFired = false;
                     firePhaseTimer = PRE_FIRE_FRAMES;
                     firedThisLeg = true;
                     // aim at wherever the player actually is, not whichever way the patrol was facing
@@ -103,10 +102,12 @@ public class BuzzBomber extends Enemy {
     private void updateFiring(IPhysicsWorld world) {
         if (--firePhaseTimer > 0) return;
 
-        switch (firePhase) {
-            case 0 -> { firePhase = 1; firePhaseTimer = FIRE_ANIM_FRAMES; }
-            case 1 -> { fire(world); firePhase = 2; firePhaseTimer = POST_FIRE_FRAMES; }
-            default -> firing = false;
+        if (!shotFired) {
+            fire(world);
+            shotFired = true;
+            firePhaseTimer = FIRE_HOLD_FRAMES;
+        } else {
+            firing = false;
         }
     }
 
