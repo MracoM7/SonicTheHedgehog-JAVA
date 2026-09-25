@@ -26,8 +26,10 @@ public class PlayerRenderer {
     // animation constants
     private final int BORED_THRESHOLD = 300;
     private final int BORED_FRAME_DURATION = 25;
-    private final int RUN_ANIM_BASE_SPEED = 45;
-    private final int JUMP_ANIM_SPEED = 3;
+    // disasm (Sonic_Animate): held ticks = max(0, N - |speed|) in native px/frame, so both
+    // cycles speed up with ground speed instead of a fixed interval; N differs per animation
+    private final float RUN_ANIM_MAX_NATIVE = 8f;
+    private final float ROLL_JUMP_ANIM_MAX_NATIVE = 4f;
     private final int BALANCE_ANIM_SPEED = 20; // slow rock side to side
     private final int SKID_ANIM_SPEED = 6;
     private final int SKID_POSE_MIN_FRAMES = 15; // isSkidding() can go true for only 2-3 frames at high speed, too brief on its own
@@ -312,19 +314,20 @@ public class PlayerRenderer {
             previousState = player.getCurrentState();
         }
 
-        if (!player.isOnGround()) {
+        if (player.getCurrentState() == PlayerState.JUMPING || player.getCurrentState() == PlayerState.ROLLING) {
+            float speedNative = Math.abs(player.isOnGround() ? player.getGSpeed() : player.getVelocityX()) / GameConstants.SCALE;
+            int interval = (int) Math.max(0f, ROLL_JUMP_ANIM_MAX_NATIVE - speedNative);
             spriteCounter++;
-            if (spriteCounter > JUMP_ANIM_SPEED) {
+            if (spriteCounter > interval) {
                 spriteNum = (spriteNum + 1) % jumpSprites.length;
                 spriteCounter = 0;
             }
         } else {
             if (Math.abs(player.getGSpeed()) > 0.1f) { // below this, treat as stopped rather than an animated crawl
-                // +0.5f keeps the cycle from spinning up towards infinite speed as gSpeed -> 0
-                int dynSpeed = Math.max(2,
-                    (int)(RUN_ANIM_BASE_SPEED / (Math.abs(player.getGSpeed()) + 0.5f)));
+                float speedNative = Math.abs(player.getGSpeed()) / GameConstants.SCALE;
+                int interval = (int) Math.max(0f, RUN_ANIM_MAX_NATIVE - speedNative);
                 spriteCounter++;
-                if (spriteCounter > dynSpeed) {
+                if (spriteCounter > interval) {
                     int maxFrames = (Math.abs(player.getGSpeed()) > player.getFastRunThreshold())
                         ? fastSprites.length : runSprites.length;
                     spriteNum = (spriteNum + 1) % maxFrames;
