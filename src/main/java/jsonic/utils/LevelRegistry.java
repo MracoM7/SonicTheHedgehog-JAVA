@@ -34,6 +34,10 @@ public final class LevelRegistry {
 
     // Every selectable level, in menu order - the single source of truth MenuState and
     // TitleRenderer read from, so adding a level here is the only place that needs touching.
-    public static final LevelConfig[] ALL = { LEVEL_01, LEVEL_TEST };
+    // LEVEL_TEST only makes sense with the debug overlay available to read it, so it's hidden
+    // from public builds instead of listed there with no way to see what it's testing.
+    public static final LevelConfig[] ALL = GameConstants.DEBUG_ENABLED
+        ? new LevelConfig[] { LEVEL_01, LEVEL_TEST }
+        : new LevelConfig[] { LEVEL_01 };
 
 }

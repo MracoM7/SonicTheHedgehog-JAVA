@@ -4,6 +4,7 @@ import jsonic.controller.IControllerForModel;
 import jsonic.controller.IControllerForView;
 import jsonic.model.input.InputSnapshot;
 import jsonic.model.world.Level;
+import jsonic.utils.GameConstants;
 import jsonic.view.IRenderSnapshot;
 
 /** Active gameplay: advances the Level each tick and reacts to pause/game-over/level-complete. */
@@ -33,7 +34,7 @@ public class PlayState extends State {
             return;
         }
 
-        if (input.debugJustPressed) {
+        if (input.debugJustPressed && GameConstants.DEBUG_ENABLED) {
             level.toggleDebug();
         }
     }

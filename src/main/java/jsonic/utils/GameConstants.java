@@ -26,4 +26,7 @@ public final class GameConstants {
     public static final int FPS = 60;
     public static final int TIME_LIMIT_FRAMES = 10 * 60 * FPS; // 10:00 forces a time over (HUD Update.asm); shared with HUDRenderer's TIME blink threshold
 
+    // debug
+    public static final boolean DEBUG_ENABLED = true; // flip to false and rebuild for a public jar without the overlay
+
 }

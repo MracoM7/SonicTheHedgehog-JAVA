@@ -22,6 +22,30 @@ java -cp out jsonic.controller.Main
 (un IDE che riconosce la convenzione Maven, come l'estensione Java di VS Code, compila e avvia
 il progetto senza bisogno di questi comandi)
 
+### Jar eseguibile
+
+`SonicJava.jar`, nella root del repository, è già pronto all'uso: `java -jar SonicJava.jar`.
+Compilato con l'overlay di debug disattivato (`DEBUG_ENABLED = false`, si veda sotto).
+
+Nessuna dipendenza nativa (solo Swing/AWT standard): un unico jar gira invariato su Linux,
+Windows e macOS, senza bisogno di ricompilarlo per ciascun sistema — basta un JRE/JDK 17+
+installato su chi lo esegue. Per ricostruirlo da sorgente:
+
+```
+javac --release 17 -d out $(find src/main/java -name "*.java")
+cp -r src/main/resources/res out/res
+echo "Main-Class: jsonic.controller.Main" > manifest.txt
+jar cfm SonicJava.jar manifest.txt -C out .
+```
+
+Poi, su qualunque sistema operativo: `java -jar SonicJava.jar`
+
+(`--release 17` fissa la versione minima di Java richiesta per l'esecuzione a una LTS diffusa,
+indipendentemente dalla versione di JDK usata per compilare)
+
+Per una build senza l'overlay di debug (tasto T, vedi tabella comandi), imposta
+`DEBUG_ENABLED = false` in `jsonic.utils.GameConstants` prima di compilare.
+
 ## Comandi
 
 | Tasto | Azione |
