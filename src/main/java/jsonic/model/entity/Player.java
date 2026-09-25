@@ -548,14 +548,20 @@ public class Player extends Entity implements ICameraTarget, ICollector {
         int cx = Math.round(x), cy = Math.round(y);
         // same tunneling fix as checkAirToGroundCollisions/checkCeilingBonk, for a fast midair dash
         int lookBack = Math.round(Math.abs(velX));
+        // two probes (near head, near feet), or a tall wall goes undetected whenever the centre
+        // alone clears its top during a knockback arc - same reasoning as checkGroundObstacle()
+        int headY = cy - currentRadiusY + WALL_PROBE_INSET;
+        int feetY = cy + currentRadiusY - WALL_PROBE_INSET;
         if (velX > 0) {
-            SensorResult r = world.castSensor(cx, cy, SensorDirection.RIGHT, lookBack, PUSH_RADIUS + 2);
+            SensorResult r = world.castSensor(cx, headY, SensorDirection.RIGHT, lookBack, PUSH_RADIUS + 2);
+            if (!r.found) r = world.castSensor(cx, feetY, SensorDirection.RIGHT, lookBack, PUSH_RADIUS + 2);
             if (r.found && r.surface <= cx + PUSH_RADIUS) {
                 x = r.surface - PUSH_RADIUS;
                 velX = 0; gSpeed = 0;
             }
         } else if (velX < 0) {
-            SensorResult l = world.castSensor(cx, cy, SensorDirection.LEFT, lookBack, PUSH_RADIUS + 2);
+            SensorResult l = world.castSensor(cx, headY, SensorDirection.LEFT, lookBack, PUSH_RADIUS + 2);
+            if (!l.found) l = world.castSensor(cx, feetY, SensorDirection.LEFT, lookBack, PUSH_RADIUS + 2);
             if (l.found && l.surface >= cx - PUSH_RADIUS) {
                 x = l.surface + PUSH_RADIUS;
                 velX = 0; gSpeed = 0;

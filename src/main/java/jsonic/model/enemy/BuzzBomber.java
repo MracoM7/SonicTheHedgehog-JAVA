@@ -7,17 +7,16 @@ import jsonic.model.physics.IPhysicsWorld;
 import jsonic.utils.GameConstants;
 
 /**
- * Flying, shooting badnik: never touches the ground, hovers with a small vertical bob, patrols a
- * fixed range around its spawn point, and fires at most once per patrol leg when the player is
- * close. Two body poses (idle/gun-out) plus Enemy's two effect slots for wing blur and exhaust.
+ * Flying, shooting badnik: never touches the ground, flies a fixed time per leg before turning
+ * around, and fires at most once per leg when the player is close. Two body poses (idle/gun-out)
+ * plus Enemy's two effect slots for wing blur and exhaust.
  */
 public class BuzzBomber extends Enemy {
 
     private static final int PATROL_SPEED_NATIVE = 2; // guide value (4) read as too fast in testing
     private static final int PATROL_SPEED = PATROL_SPEED_NATIVE * GameConstants.SCALE;
-    private static final int PATROL_RANGE = GameConstants.TILE_SIZE * 3;
-    private static final double BOB_SPEED = 0.05;
-    private static final int BOB_AMPLITUDE = GameConstants.TILE_SIZE / 2;
+    private static final int FLIGHT_FRAMES = 128; // guide value: flight time per leg before turning around
+    private static final int TURN_WAIT_FRAMES = 60; // guide value: pause before resuming flight
 
     // firing sequence: waits, shoots (gun-out pose), spawns the shot, waits before resuming flight
     private static final int FIRE_TRIGGER_RADIUS = GameConstants.TILE_SIZE * 6; // player X within this range
@@ -39,12 +38,9 @@ public class BuzzBomber extends Enemy {
     private static final int FIRE_SPRITE_WIDTH = 40;
     private static final int FIRE_SPRITE_HEIGHT = 32;
 
-    private boolean initialized = false;
-    private int spawnX;
-    private int spawnY;
-
     private int direction = 1; // -1 = left, +1 = right
-    private int bobTimer = 0;
+    private boolean turning = false; // paused at the end of a leg, waiting to resume the other way
+    private int legTimer = FLIGHT_FRAMES;
 
     private boolean firedThisLeg = false; // at most one shot per patrol leg, reset on turnaround
     public boolean firing = false; // read by BuzzBomberView to pick idle vs fire pose
@@ -64,31 +60,32 @@ public class BuzzBomber extends Enemy {
 
     @Override
     public void update(IPhysicsWorld world) {
-        if (!initialized) {
-            spawnX = worldX;
-            spawnY = worldY;
-            initialized = true;
-        }
-
         if (firing) {
             updateFiring(world);
+        } else if (turning) {
+            if (--legTimer <= 0) {
+                direction = -direction;
+                turning = false;
+                legTimer = FLIGHT_FRAMES;
+                firedThisLeg = false;
+            }
         } else {
             worldX += direction * PATROL_SPEED;
-            if (worldX > spawnX + PATROL_RANGE) { direction = -1; firedThisLeg = false; }
-            if (worldX < spawnX - PATROL_RANGE) { direction = 1;  firedThisLeg = false; }
             facingRight = direction > 0;
 
-            bobTimer++;
-            worldY = spawnY + (int) Math.round(Math.sin(bobTimer * BOB_SPEED) * BOB_AMPLITUDE);
-
-            int centerX = worldX + solidArea.x + solidArea.width / 2;
-            if (!firedThisLeg && Math.abs(world.getPlayerX() - centerX) < FIRE_TRIGGER_RADIUS) {
-                firing = true;
-                firePhase = 0;
-                firePhaseTimer = PRE_FIRE_FRAMES;
-                firedThisLeg = true;
-                // aim at wherever the player actually is, not whichever way the patrol was facing
-                facingRight = world.getPlayerX() >= centerX;
+            if (--legTimer <= 0) {
+                turning = true;
+                legTimer = TURN_WAIT_FRAMES;
+            } else {
+                int centerX = worldX + solidArea.x + solidArea.width / 2;
+                if (!firedThisLeg && Math.abs(world.getPlayerX() - centerX) < FIRE_TRIGGER_RADIUS) {
+                    firing = true;
+                    firePhase = 0;
+                    firePhaseTimer = PRE_FIRE_FRAMES;
+                    firedThisLeg = true;
+                    // aim at wherever the player actually is, not whichever way the patrol was facing
+                    facingRight = world.getPlayerX() >= centerX;
+                }
             }
         }
         // wings keep animating even while stopped to shoot; exhaust only shows while thrusting
