@@ -4,13 +4,13 @@ import jsonic.model.physics.IPhysicsWorld;
 import jsonic.utils.GameConstants;
 
 /**
- * Badnik that leaps out of the water near bridges: rests, then jumps straight up and falls back
- * under simulated velocity + gravity (no closed-form arc). spawnY captured lazily on first update().
+ * Badnik that leaps out of the water near bridges: bounces continuously under simulated velocity
+ * + gravity (no closed-form arc), relaunching the instant it lands. spawnY captured lazily on
+ * first update().
  */
 public class Chopper extends Enemy {
 
-    private static final int REST_FRAMES = 90; // 1.5s settled before leaping again
-    private static final float GRAVITY = (36f / 256f) * GameConstants.SCALE; // guide value is 24; tuned up for this level
+    private static final float GRAVITY = (24f / 256f) * GameConstants.SCALE; // guide value, used as-is
     private static final float LAUNCH_VELOCITY = -7f * GameConstants.SCALE; // guide value, used as-is
     private static final int ANIM_FRAME_SPEED = 10;
     private static final int ANIM_FRAME_COUNT = 2; // chopper.png is a 2x32x32 strip
@@ -18,10 +18,8 @@ public class Chopper extends Enemy {
     private boolean initialized = false;
     private int spawnY;
 
-    private boolean jumping = false;
-    private float yPos; // precise sub-pixel position while airborne
+    private float yPos; // precise sub-pixel position
     private float velocityY;
-    private int restTimer = REST_FRAMES;
 
     private int animCounter = 0;
     public int frameIndex = 0; // read by ChopperView to pick the current frame
@@ -37,25 +35,17 @@ public class Chopper extends Enemy {
         if (!initialized) {
             spawnY = worldY;
             yPos = spawnY;
+            velocityY = LAUNCH_VELOCITY;
             initialized = true;
         }
 
-        if (jumping) {
-            velocityY += GRAVITY;
-            yPos += velocityY;
-            if (yPos >= spawnY) {
-                yPos = spawnY;
-                jumping = false;
-                restTimer = REST_FRAMES;
-            }
-            worldY = Math.round(yPos);
-        } else {
-            worldY = spawnY;
-            if (--restTimer <= 0) {
-                jumping = true;
-                velocityY = LAUNCH_VELOCITY;
-            }
+        velocityY += GRAVITY;
+        yPos += velocityY;
+        if (yPos >= spawnY) {
+            yPos = spawnY;
+            velocityY = LAUNCH_VELOCITY;
         }
+        worldY = Math.round(yPos);
 
         animCounter++;
         if (animCounter > ANIM_FRAME_SPEED) {

@@ -513,7 +513,6 @@ public class Player extends Entity implements ICameraTarget, ICollector {
         }
         if (isTooSteepToHold(modeForAngle(pick.angle)) && Math.abs(landingGSpeed) < FALL_THRESHOLD) return;
 
-        y = pick.surface - currentRadiusY;
         onGround = true;
         hitStun = false; // knockback arc (see takeDamage()) ends the instant it lands
         springLaunched = false;
@@ -525,7 +524,11 @@ public class Player extends Entity implements ICameraTarget, ICollector {
         currentGravityMode = modeForAngle(pick.angle);
         gSpeed = landingGSpeed;
 
+        // re-derive the radius for the landed state before placing y, or a compact-to-standing
+        // transition leaves the foot line reading as sunk into the ground for one frame
         currentState = (Math.abs(gSpeed) > MOVING_THRESHOLD) ? PlayerState.RUNNING : PlayerState.IDLE;
+        updatePhysicsGeometry();
+        y = pick.surface - currentRadiusY;
     }
 
     private void checkCeilingBonk() {
@@ -606,15 +609,15 @@ public class Player extends Entity implements ICameraTarget, ICollector {
 
         if (isCurve && angleDiff(r.angle, groundAngle) <= OBSTACLE_ANGLE_THRESHOLD) return false;
 
-        // still not necessarily a wall: find the column's true topmost surface. Within a normal
-        // step's reach of the current foot line it's just more ground (handled next frame by
-        // updateGroundSensors()); only a surface far above that is a genuine wall.
+        // still not necessarily a wall: find the column's true topmost surface. Within a full
+        // tile of the current foot line it's just more ground (block tiles can differ in height
+        // by up to 3/4 of a tile between themselves); only a surface further above is a wall.
         int currentFootAxis = horizontal ? Math.round(y) + downY * currentRadiusY
                                           : Math.round(x) + downX * currentRadiusY;
         int aheadX = horizontal ? r.surface + travelSign * 2 : currentFootAxis;
         int aheadY = horizontal ? currentFootAxis : r.surface + travelSign * 2;
         SensorResult ahead = world.castSensor(aheadX, aheadY, downDir, WALL_TOP_SEARCH, SENSOR_LOOK_DOWN);
-        if (ahead.found && Math.abs(ahead.surface - currentFootAxis) <= SENSOR_LOOK_UP) return false;
+        if (ahead.found && Math.abs(ahead.surface - currentFootAxis) <= GameConstants.TILE_SIZE) return false;
 
         int newAxisPos = r.surface - travelSign * PUSH_RADIUS;
         if (horizontal) x = newAxisPos; else y = newAxisPos;
