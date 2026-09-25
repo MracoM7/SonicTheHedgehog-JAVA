@@ -771,7 +771,7 @@ public class Level implements IPhysicsWorld, ISoundEmitter {
         }
     }
 
-    // killPlayer() is implemented above (§RESET) — it's also part of the
+    // killPlayer() is implemented above under reset — it's also part of the
     // IPhysicsWorld contract, called by Player.takeDamage() when ringCount == 0.
 
     @Override
