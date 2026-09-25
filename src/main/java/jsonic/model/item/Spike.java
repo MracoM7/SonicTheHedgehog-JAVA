@@ -24,8 +24,8 @@ public class Spike extends Item {
         renderHeightTiles = 2f; // same height as Rock; width follows its own aspect ratio
         requireLandingFromAbove = true;
 
-        // matches the solid FULL block spawnSolidObstacle() marks, so the
-        // "landed on top" check and the debug hitbox reflect the real footprint
+        // matches the solid FULL block spawnSolidObstacle() marks, and the sprite's own drawn
+        // bounds (renderHeightTiles=2, bottom-anchored - see ItemView.drawStandard())
         int ts = GameConstants.TILE_SIZE;
         solidArea = new Rectangle(-ts, -ts, ts * 3, ts * 2);
     }

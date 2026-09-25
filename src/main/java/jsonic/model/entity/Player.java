@@ -474,9 +474,14 @@ public class Player extends Entity implements ICameraTarget, ICollector {
         x += velX;
         y += velY;
 
-        checkWalls();
-        checkCeilingBonk();
+        // landing takes priority: checkWalls() has no step-vs-wall tolerance, so on the same
+        // frame as a landing it could zero velX for a normal ledge, which the landing would
+        // then reuse as gSpeed
         checkAirToGroundCollisions();
+        if (!onGround) {
+            checkWalls();
+            checkCeilingBonk();
+        }
     }
 
     private void checkAirToGroundCollisions() {

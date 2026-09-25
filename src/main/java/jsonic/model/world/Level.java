@@ -461,11 +461,20 @@ public class Level implements IPhysicsWorld, ISoundEmitter {
 
     private void checkItemCollisions() {
         int hitX = (int) player.getX() - player.getHitboxRadiusX();
-        int hitY = (int) player.getY() - player.getHitboxRadiusY();
         Rectangle playerHitbox = new Rectangle(
-            hitX, hitY,
+            hitX, (int) player.getY() - player.getHitboxRadiusY(),
             player.getHitboxRadiusX() * 2,
             player.getHitboxRadiusY() * 2
+        );
+        // taller variant for landing-from-above hazards (Spike, Spring): the player's feet
+        // actually rest at the ground radius, taller than the generic item hitbox, so standing
+        // on one would never overlap it otherwise; +2 past that line since intersects() needs
+        // real shared area, not just a touching edge
+        int landingRadiusY = player.getCurrentRadiusY() + 2;
+        Rectangle landingHitbox = new Rectangle(
+            hitX, (int) player.getY() - landingRadiusY,
+            player.getHitboxRadiusX() * 2,
+            landingRadiusY * 2
         );
 
         // snapshot, not `items` itself: onCollision() can scatter new ScatteredRing
@@ -478,7 +487,8 @@ public class Level implements IPhysicsWorld, ISoundEmitter {
                 item.solidArea.width,
                 item.solidArea.height
             );
-            if (!playerHitbox.intersects(itemArea)) continue;
+            Rectangle probeHitbox = item.requireLandingFromAbove ? landingHitbox : playerHitbox;
+            if (!probeHitbox.intersects(itemArea)) continue;
 
             if (item.requireLandingFromAbove) {
                 // falling onto it, or already resting on top; isOnGround() keeps it
